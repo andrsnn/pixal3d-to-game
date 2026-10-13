@@ -2,7 +2,7 @@
 
 How I get a model from one picture into my game with [Pixal3D](https://github.com/TencentARC/Pixal3D), an open-source model that turns one picture into a textured 3D model.
 
-The example is the Statue of Liberty in my game Salt Blade. It started as one public-domain photo. Pixal3D made a model with 972,738 triangles in about 5 minutes on a laptop with an RTX 5080. My agent's script cut it to 13,623 triangles for the game, and the script here is a cleaned-up version of it.
+The example is the Statue of Liberty in my game Salt Blade. It started as one public-domain photo. Pixal3D made a model with 972,738 triangles in about 5 minutes on a laptop with an RTX 5080. My agent's script cut it to 127,887 triangles for the game, and the script here is a cleaned-up version of it.
 
 ## What you need
 
@@ -44,7 +44,7 @@ A Pixal3D model has about a million triangles and a 4K texture, which is too muc
 
 ```bash
 pip install trimesh numpy scipy pillow
-python glb_to_game_model.py statue.glb statue-game.glb --triangles 14000 --views views.jpg
+python glb_to_game_model.py statue.glb statue-game.glb --triangles 120000 --views views.jpg
 ```
 
 The script:
@@ -58,17 +58,19 @@ On the statue it prints:
 
 ```
 source: 972,738 triangles, 714,698 points
-game model: 13,994 triangles, 4,484 points, 3,489 faces turned outward
+game model: 119,998 triangles, 40,557 points, 36,401 faces turned outward
 ```
 
-The merge is a simple grid, so the result looks blocky up close. It suits a prop the camera stays away from. For a close-up model, use Blender's Decimate modifier and keep the texture.
+Start high and go lower only while a close screenshot still shows the small details. My first try at the statue had 13,623 triangles, and up close she had no face. The one in the game has 127,887, with the finest grid on her head, crown, hand and torch.
+
+The merge here is one plain grid over the whole model. For a model the camera gets very close to, use Blender's Decimate modifier and keep the texture.
 
 ## What to check
 
 Pixal3D sees one side of the object, so it guesses the back. These are the problems I've had:
 
 - The model can lean. My statue leaned back about 15 degrees and needed standing upright.
-- Thin parts come out soft or fused. My agent rebuilt the statue's crown rays in code.
+- Thin parts come out soft or fused, and a low triangle count loses them completely. The statue's crown rays only came back when the game model kept more triangles.
 - The first size in the game is usually wrong. Take screenshots and look at them, or have a second agent review them.
 
 ## The input picture

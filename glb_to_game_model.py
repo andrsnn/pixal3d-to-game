@@ -1,6 +1,6 @@
 """Turn a Pixal3D model (about a million triangles and a 4K texture) into a small model a game can draw.
 
-    python glb_to_game_model.py pixal3d_textured.glb game.glb --triangles 14000 --views views.jpg
+    python glb_to_game_model.py pixal3d_textured.glb game.glb --triangles 120000 --views views.jpg
 
 What it does:
 1. Reads the .glb and copies the texture's colour onto every corner point (vertex colours), so the game needs no texture file.
@@ -101,7 +101,7 @@ def face_outward(source_verts, points, faces):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('source'); ap.add_argument('out')
-    ap.add_argument('--triangles', type=int, default=14000, help='the most triangles the game model may have')
+    ap.add_argument('--triangles', type=int, default=120000, help='the most triangles the game model may have')
     ap.add_argument('--views', help='write a four-view check picture here')
     a = ap.parse_args()
 
