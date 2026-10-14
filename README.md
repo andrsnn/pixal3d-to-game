@@ -1,10 +1,10 @@
 # pixal3d-to-game
 
-How I get a model from one picture into my game with [Pixal3D](https://github.com/TencentARC/Pixal3D), an open-source model that turns one picture into a textured 3D model.
+I use [Pixal3D](https://github.com/TencentARC/Pixal3D), an open-source model, to turn one picture into a textured 3D model for my game.
 
 The example is the Statue of Liberty in my game Salt Blade. It started as one public-domain photo. Pixal3D made a model with 972,738 triangles in about 5 minutes on a laptop with an RTX 5080. My agent's script cut it to 127,887 triangles for the game, and the script here is a cleaned-up version of it.
 
-## What you need
+## Pixal3D requirements
 
 - An NVIDIA GPU. I run it on an RTX 4090 and on an RTX 5080 laptop with 16 GB.
 - About 46 GB of disk space for the downloads.
@@ -36,11 +36,11 @@ I use the Python script, so I haven't run this one myself.
 
 ### 3. A coding agent like Claude
 
-Paste [claude-prompt.md](claude-prompt.md) into Claude Code and change the first line to your picture. It asks the agent to install Pixal3D if it's missing, run it, check the model from four sides, make the game version with the script below, and put it in your game.
+Paste [claude-prompt.md](claude-prompt.md) into Claude Code and replace `statue.png` on the first line with your picture's file name. It asks the agent to install Pixal3D if it's missing, run it, check the model from four sides, make the game version with the script below, and put it in your game.
 
 ## From the Pixal3D model to a game model
 
-A Pixal3D model has about a million triangles and a 4K texture, which is too much for one prop in most games.
+A Pixal3D model has about a million triangles and a 4K texture. I make a smaller version for my game.
 
 ```bash
 pip install trimesh numpy scipy pillow
@@ -61,18 +61,18 @@ source: 972,738 triangles, 714,698 points
 game model: 119,998 triangles, 40,557 points, 36,401 faces turned outward
 ```
 
-Start high and go lower only while a close screenshot still shows the small details. My first try at the statue had 13,623 triangles, and up close she had no face. The one in the game has 127,887, with the finest grid on her head, crown, hand and torch.
+Start with a high triangle count and reduce it only while a close screenshot still shows the small details. My first game model had 13,623 triangles, and up close you couldn't make out her face. The one in the game has 127,887 triangles, with more detail on her head, crown, hand and torch.
 
-The merge here is one plain grid over the whole model. For a model the camera gets very close to, use Blender's Decimate modifier and keep the texture.
+The script merges nearby points using one grid over the whole model. For a model the camera gets very close to, use Blender's Decimate modifier and keep the texture.
 
-## What to check
+## Game model checks
 
-Pixal3D sees one side of the object, so it guesses the back. These are the problems I've had:
+Pixal3D uses one view of the object and guesses the back. Check these parts of the model:
 
-- The model can lean. My statue leaned back about 15 degrees and needed standing upright.
-- Thin parts come out soft or fused, and a low triangle count loses them completely. The statue's crown rays only came back when the game model kept more triangles.
-- The first size in the game is usually wrong. Take screenshots and look at them, or have a second agent review them.
+- Check whether the model is upright. My statue leaned back about 15 degrees, so my agent's script stood it upright.
+- Check thin parts for missing detail or joins between them. Keep enough triangles to show them. The statue's crown rays became visible when the game model kept more triangles.
+- Check the size in your game. Take screenshots and look at them, or have a second agent review them.
 
 ## The input picture
 
-One object, alone and centred, on a plain dark background. Cut it out of its background first.
+Use a picture of one object, alone and centred, on a plain dark background. Cut it out of its background first.
